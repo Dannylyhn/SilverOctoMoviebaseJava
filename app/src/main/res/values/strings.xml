@@ -1,0 +1,27 @@
+<resources>
+    <string name="app_name">SilverOctoMoviebase</string>
+
+    <string-array name="movie_id">
+        <item>616820</item>
+    </string-array>
+
+    <string-array name="movie_title">
+        <item>Halloween Ends</item>
+    </string-array>
+
+    <string-array name="poster_path">
+        <item>/3uDwqxbr0j34rJVJMOW6o8Upw5W.jpg</item>
+    </string-array>
+
+    <string-array name="rating">
+        <item>6.9</item>
+    </string-array>
+
+    <string-array name="movie_description">
+        <item>Four years after the events of Halloween in 2018,
+            Laurie has decided to liberate herself from fear and rage and embrace life.
+            But when a young man is accused of killing a boy he was babysitting,
+            it ignites a cascade of violence and terror that will force Laurie to finally confront the evil she can’t control,
+            once and for all.</item>
+    </string-array>
+</resources>
