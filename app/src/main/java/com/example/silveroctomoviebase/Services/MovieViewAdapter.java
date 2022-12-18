@@ -8,23 +8,32 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.lifecycle.LiveData;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.silveroctomoviebase.Models.MovieModel;
 import com.example.silveroctomoviebase.R;
+import com.example.silveroctomoviebase.RoomDatabase.Movie;
 
 import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 public class MovieViewAdapter extends RecyclerView.Adapter<MovieViewAdapter.MyViewHolder> {
     Context context;
-    ArrayList<MovieModel> movies;
+    List<Movie> movies = new ArrayList<>();
     private final MovieViewInterface movieViewInterface;
 
-    public MovieViewAdapter(Context context, ArrayList<MovieModel> movies, MovieViewInterface movieViewInterface){
+
+
+    public MovieViewAdapter(Context context, MovieViewInterface movieViewInterface){
         this.context = context;
-        this.movies = movies;
         this.movieViewInterface = movieViewInterface;
+    }
+
+    public void setMovies(List<Movie> movies){
+        this.movies = movies;
     }
 
     @NonNull
@@ -49,7 +58,8 @@ public class MovieViewAdapter extends RecyclerView.Adapter<MovieViewAdapter.MyVi
 
     @Override
     public int getItemCount() {
-        return movies.size();
+
+        return this.movies.size();
     }
 
     public static class MyViewHolder extends RecyclerView.ViewHolder {

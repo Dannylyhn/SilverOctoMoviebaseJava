@@ -1,17 +1,24 @@
 package com.example.silveroctomoviebase;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.Observer;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.room.Room;
 
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 
 import com.example.silveroctomoviebase.API.APIService;
-import com.example.silveroctomoviebase.Models.Movie;
 import com.example.silveroctomoviebase.Models.MovieModel;
 import com.example.silveroctomoviebase.Models.MovieResponse;
+import com.example.silveroctomoviebase.RoomDatabase.Movie;
+import com.example.silveroctomoviebase.RoomDatabase.MovieDao;
+import com.example.silveroctomoviebase.RoomDatabase.MovieDatabase;
 import com.example.silveroctomoviebase.Services.MovieViewAdapter;
 import com.example.silveroctomoviebase.Services.MovieViewInterface;
 
@@ -22,6 +29,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -31,13 +41,16 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class MainActivity extends AppCompatActivity implements MovieViewInterface {
 
-    //Used to send to our recyclerAdapter later on
-    //Maybe use a database or fetch to fill this list up
-    ArrayList<MovieModel> movies = new ArrayList<>();
-    List<Movie> moviesList;
+    //Contains data directly from the JSON file
+    List<Movie> moviestest = new ArrayList<>();
 
+    //Contains the data from the database
+    List<Movie> moviesList = new ArrayList<>();
+    MovieViewAdapter adapter;
+    private Executor executor = Executors.newSingleThreadExecutor();
+    MovieDao movieDao;
 
-    //First is halloween ends
+    //Images used in the first iteration of implementation
     int[] posterImages = {R.drawable.halloweenends, R.drawable.orphan, R.drawable.projectgem, R.drawable.fall, R.drawable.bullettrain,
             R.drawable.fullmetal, R.drawable.hocuspocus, R.drawable.athena, R.drawable.halloweenends, R.drawable.orphan,
             R.drawable.projectgem, R.drawable.fall, R.drawable.bullettrain,
@@ -49,19 +62,50 @@ public class MainActivity extends AppCompatActivity implements MovieViewInterfac
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        movieDao = MovieDatabase.getInstance(this).movieDao();
+
+        //Add data to database
+        executor.execute(new Runnable() {
+            @Override
+            public void run() {
+                setUpMovieModels();
+            }
+        });
+
         //getMoviesFromAPI();
 
         RecyclerView recyclerView = findViewById(R.id.rvPopularMovies);
 
-        setUpMovieModels();
-
-        MovieViewAdapter adapter = new MovieViewAdapter(this, movies, this);
+        adapter = new MovieViewAdapter(this, this);
 
         recyclerView.setAdapter(adapter);
 
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
+        //Load the data into the adapter.
+        executor.execute(new Runnable() {
+            @Override
+            public void run() {
+                loadMoviesList();
+            }
+        });
+
+        //Ensure time for data to load.
+        try {
+            Thread.sleep(300);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
     }
+
+    //Load data into the list in the adapter
+    private void loadMoviesList(){
+        MovieDatabase db = MovieDatabase.getInstance(getApplicationContext());
+        moviesList = db.movieDao().getAllMovies();
+        adapter.setMovies(moviesList);
+    }
+
 
     private void setUpMovieModels() {
         //Read from JSON file to put in a list
@@ -84,7 +128,11 @@ public class MainActivity extends AppCompatActivity implements MovieViewInterfac
                 String rating = jsonObj.getJSONArray("results").getJSONObject(i).get("vote_average").toString();
                 String movie_description = jsonObj.getJSONArray("results").getJSONObject(i).get("overview").toString();
 
-                movies.add(new MovieModel(movie_id, movie_title, rating, movie_description, poster_path, release_date, posterImages[i]));
+                //Inside data into a List
+                //moviestest.add(new Movie(movie_id, movie_title, rating, movie_description, poster_path, release_date, posterImages[i]));
+
+                //Insert data into Room database.
+                movieDao.insert(new com.example.silveroctomoviebase.RoomDatabase.Movie(movie_id, movie_title, rating, movie_description, poster_path, release_date, posterImages[i]));
             }
 
         } catch (JSONException e) {
@@ -112,19 +160,22 @@ public class MainActivity extends AppCompatActivity implements MovieViewInterfac
 
     @Override
     public void onItemClick(int position) {
+
         Intent intent = new Intent(MainActivity.this, movie_details.class);
-        intent.putExtra("Title", movies.get(position).getMovie_title());
-        intent.putExtra("Description", movies.get(position).getMovie_description());
-        intent.putExtra("IMAGE", movies.get(position).getPoster_image());
-        intent.putExtra("Poster_path", movies.get(position).getPoster_path());
-        intent.putExtra("Rating", movies.get(position).getRating());
-        intent.putExtra("release", movies.get(position).getRelease_date());
+        intent.putExtra("Title", moviesList.get(position).getMovie_title());
+        intent.putExtra("Description", moviesList.get(position).getMovie_description());
+        intent.putExtra("IMAGE", moviesList.get(position).getPoster_image());
+        intent.putExtra("Poster_path", moviesList.get(position).getPoster_path());
+        intent.putExtra("Rating", moviesList.get(position).getRating());
+        intent.putExtra("release", moviesList.get(position).getRelease_date());
 
         startActivity(intent);
+
 
     }
 
 
+    /* Attempt to use Retrofit
     public void getMoviesFromAPI(){
         Retrofit retrofit = new Retrofit.Builder().baseUrl("https://api.themoviedb.org/3/")
                 .addConverterFactory(GsonConverterFactory.create()).build();
@@ -154,4 +205,6 @@ public class MainActivity extends AppCompatActivity implements MovieViewInterfac
 
 
     }
+    */
+
 }
