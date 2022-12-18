@@ -1,21 +1,12 @@
 package com.example.silveroctomoviebase;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.lifecycle.LiveData;
-import androidx.lifecycle.Observer;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.room.Room;
 
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Handler;
-import android.util.Log;
 
-import com.example.silveroctomoviebase.API.APIService;
-import com.example.silveroctomoviebase.Models.MovieModel;
-import com.example.silveroctomoviebase.Models.MovieResponse;
 import com.example.silveroctomoviebase.RoomDatabase.Movie;
 import com.example.silveroctomoviebase.RoomDatabase.MovieDao;
 import com.example.silveroctomoviebase.RoomDatabase.MovieDatabase;
@@ -31,13 +22,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
-
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
 
 public class MainActivity extends AppCompatActivity implements MovieViewInterface {
 
