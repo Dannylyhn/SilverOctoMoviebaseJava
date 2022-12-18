@@ -43,7 +43,6 @@ public class MovieViewAdapter extends RecyclerView.Adapter<MovieViewAdapter.MyVi
         holder.title.setText(movies.get(position).getMovie_title());
         holder.rating.setText(movies.get(position).getRating());
         holder.release.setText(movies.get(position).getRelease_date());
-        //holder.poster.setImageResource(movies.get(position).getPoster_image());
         Glide.with(context).load(IMAGE_BASE + movies.get(position).getPoster_path()).into(holder.poster);
 
     }

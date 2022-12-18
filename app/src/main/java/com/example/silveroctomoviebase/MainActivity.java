@@ -36,6 +36,7 @@ public class MainActivity extends AppCompatActivity implements MovieViewInterfac
     ArrayList<MovieModel> movies = new ArrayList<>();
     List<Movie> moviesList;
 
+
     //First is halloween ends
     int[] posterImages = {R.drawable.halloweenends, R.drawable.orphan, R.drawable.projectgem, R.drawable.fall, R.drawable.bullettrain,
             R.drawable.fullmetal, R.drawable.hocuspocus, R.drawable.athena, R.drawable.halloweenends, R.drawable.orphan,

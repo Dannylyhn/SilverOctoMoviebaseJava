@@ -7,6 +7,8 @@ import android.os.Bundle;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+
 import org.w3c.dom.Text;
 
 public class movie_details extends AppCompatActivity {
@@ -16,9 +18,10 @@ public class movie_details extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_movie_details);
 
+        String IMAGE_BASE = "https://image.tmdb.org/t/p/w500/";
+
         String title = getIntent().getStringExtra("Title");
         String description = getIntent().getStringExtra("Description");
-        int image = getIntent().getIntExtra("IMAGE", 0);
         String posterPath = getIntent().getStringExtra("Poster_path");
         String rating = getIntent().getStringExtra("Rating");
         String releasedate = getIntent().getStringExtra("release");
@@ -29,8 +32,10 @@ public class movie_details extends AppCompatActivity {
         ImageView imageView = findViewById(R.id.iv_detailsPoster);
         TextView ratingView = findViewById(R.id.tv_ratingdetails);
 
+
+
         titleView.setText(title);
-        imageView.setImageResource(image);
+        Glide.with(this).load(IMAGE_BASE + posterPath).into(imageView);
         descriptionView.setText(description);
         ratingView.setText(rating);
         releasedateView.setText(releasedate);
