@@ -2,8 +2,10 @@ package com.example.silveroctomoviebase;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.media.Image;
 import android.os.Bundle;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -33,12 +35,14 @@ public class movie_details extends AppCompatActivity {
         TextView ratingView = findViewById(R.id.tv_ratingdetails);
 
 
-
         titleView.setText(title);
         Glide.with(this).load(IMAGE_BASE + posterPath).into(imageView);
         descriptionView.setText(description);
         ratingView.setText(rating);
         releasedateView.setText(releasedate);
+
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
 
 
     }
